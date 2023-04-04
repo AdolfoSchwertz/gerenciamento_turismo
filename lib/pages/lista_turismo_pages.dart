@@ -1,8 +1,8 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gerenciadortarefas_md/model/pontoTuristico.dart';
-import 'package:gerenciadortarefas_md/pages/filtro_page.dart';
+import 'package:gerenciamento_turismomd/model/pontoTuristico.dart';
+import 'package:gerenciamento_turismomd/pages/filtro_page.dart';
 
 import '../widgets/conteudo_form_dialog.dart';
 
@@ -14,8 +14,9 @@ class ListaTurismoPage extends StatefulWidget{
 }
 class _ListaTurismosPageState extends State<ListaTurismoPage>{
 
-  static const ACAO_VISUALIZAR = 'Visualizar';
+  static const ACAO_EDITAR = 'Editar';
   static const ACAO_EXCLUIR = 'Excluir';
+  static const ACAO_VISUALIZAR = 'visualizar';
 
   final turismos = <PontoTuristico>
   [
@@ -40,7 +41,7 @@ class _ListaTurismosPageState extends State<ListaTurismoPage>{
     );
   }
 
-  void _abrirForm({PontoTuristico? turismoAtual, int? index}){
+  void _abrirForm({PontoTuristico? turismoAtual, int? index, bool? readonly}){
     final key = GlobalKey<ConteudoFormDialogState>();
     showDialog(
         context: context,
@@ -53,6 +54,7 @@ class _ListaTurismosPageState extends State<ListaTurismoPage>{
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text('Cancelar'),
               ),
+            if (readonly == null || readonly == false)
               TextButton(
                 onPressed: () {
                   if (key.currentState != null && key.currentState!.dadosValidados()){
@@ -104,8 +106,10 @@ class _ListaTurismosPageState extends State<ListaTurismoPage>{
             ),
             itemBuilder: (BuildContext context) => _criarItensMenu(),
             onSelected: (String valorSelecinado){
-              if(valorSelecinado == ACAO_VISUALIZAR){
-                _abrirForm(turismoAtual: turismo, index: index);
+              if(valorSelecinado == ACAO_EDITAR){
+                _abrirForm(turismoAtual: turismo, index: index, readonly: false);
+              }else if(valorSelecinado == ACAO_VISUALIZAR){
+                _abrirForm(turismoAtual: turismo, index: index, readonly: true);
               }else{
                 _excluir(index);
               }
@@ -150,20 +154,37 @@ class _ListaTurismosPageState extends State<ListaTurismoPage>{
     );
 
   }
+
+
+
   List<PopupMenuEntry<String>> _criarItensMenu(){
     return[
       PopupMenuItem(
-        value: ACAO_VISUALIZAR,
+        value: ACAO_EDITAR,
         child: Row(
           children: [
             Icon(Icons.edit, color: Colors.black),
             Padding(
               padding: EdgeInsets.only(left: 10),
-              child: Text('VISUALIZAR'),
+              child: Text('EDITAR'),
             )
           ],
         ),
       ),
+
+      PopupMenuItem(
+        value: ACAO_VISUALIZAR,
+        child: Row(
+          children: [
+            Icon(Icons.visibility, color: Colors.black),
+            Padding(
+              padding: EdgeInsets.only(left: 10),
+              child: Text('visualizar'),
+            )
+          ],
+        ),
+      ),
+
       PopupMenuItem(
         value: ACAO_EXCLUIR,
         child: Row(
@@ -179,6 +200,14 @@ class _ListaTurismosPageState extends State<ListaTurismoPage>{
     ];
   }
 
+  void _visualizar() {
+    final navigator = Navigator.of(context);
+    navigator.pushNamed(FiltroPage.routeName).then((alterouValores) {
+      if (alterouValores == true) {
+      }
+    });
+  }
+
   void _abrirPaginaFiltro(){
     final navigator = Navigator.of(context);
     navigator.pushNamed(FiltroPage.routeName).then((alterouValores){
@@ -190,4 +219,5 @@ class _ListaTurismosPageState extends State<ListaTurismoPage>{
     );
 
   }
+
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gerenciadortarefas_md/pages/filtro_page.dart';
-import 'package:gerenciadortarefas_md/pages/lista_turismo_pages.dart';
+import 'package:gerenciamento_turismomd/pages/filtro_page.dart';
+import 'package:gerenciamento_turismomd/pages/lista_turismo_pages.dart';
 
 void main() {
   runApp(const AppGerenciadorTurismo());
