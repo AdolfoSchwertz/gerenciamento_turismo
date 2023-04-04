@@ -200,14 +200,6 @@ class _ListaTurismosPageState extends State<ListaTurismoPage>{
     ];
   }
 
-  void _visualizar() {
-    final navigator = Navigator.of(context);
-    navigator.pushNamed(FiltroPage.routeName).then((alterouValores) {
-      if (alterouValores == true) {
-      }
-    });
-  }
-
   void _abrirPaginaFiltro(){
     final navigator = Navigator.of(context);
     navigator.pushNamed(FiltroPage.routeName).then((alterouValores){
