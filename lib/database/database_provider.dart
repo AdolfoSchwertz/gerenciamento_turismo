@@ -31,9 +31,9 @@ class DatabaseProvider {
         ${PontoTuristico.campoId} INTEGER PRIMARY KEY AUTOINCREMENT,
         ${PontoTuristico.campoDescricao} TEXT NOT NULL,
         ${PontoTuristico.campoData} TEXT,
-        ${PontoTuristico.campoDiferenciais} TEXT
-        ${PontoTuristico.campoNome} TEXT
-        ${PontoTuristico.campoFinalizada} INTEGER NOT NULL DEFAULT 0;
+        ${PontoTuristico.campoDiferenciais} TEXT,
+        ${PontoTuristico.campoNome} TEXT,
+        ${PontoTuristico.campoFinalizada} INTEGER NOT NULL DEFAULT 0
       );
     ''');
   }

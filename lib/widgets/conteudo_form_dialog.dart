@@ -44,7 +44,7 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog> {
   Widget build(BuildContext context){
     return Form(
         key: _formKey,
-        child: Column(
+        child: SingleChildScrollView(child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextFormField(
@@ -93,6 +93,7 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog> {
             //   readOnly: true,
             // ),
           ],
+        )
         )
     );
     

@@ -27,7 +27,7 @@ class _ListaTurismoPageState extends State<ListaTurismoPage> {
 
   @override
   void initState() {
-    super.initState();
+   // super.initState();
     _atualizarLista();
   }
 
@@ -196,7 +196,7 @@ class _ListaTurismoPageState extends State<ListaTurismoPage> {
       context: context,
       builder: (_) => AlertDialog(
         title: Text(
-          turismo == null ? 'Novo Ponto Turistico' : 'Alterar Ponto Turisco ${turismo.id}',
+          turismo == null ? 'Novo Ponto Turistico' : 'Alterar Ponto Turistico ${turismo.id}',
         ),
         content: ConteudoFormDialog(
           key: key,
@@ -306,8 +306,8 @@ class _ListaTurismoPageState extends State<ListaTurismoPage> {
     );
     setState(() {
       _turismos.clear();
+      _carregando = false;
       if (turismos.isNotEmpty) {
-        _carregando = false;
         _turismos.addAll(turismos);
       }
     });

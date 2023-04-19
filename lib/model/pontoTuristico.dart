@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 
 class PontoTuristico{
 
-  static const nomeTabela = 'ponto turistico';
+  static const nomeTabela = 'ponto_turistico';
   static const campoId = 'id';
   static const campoNome = 'nome';
   static const campoDescricao = 'descricao';
@@ -35,12 +35,13 @@ class PontoTuristico{
   }
 
   Map<String, dynamic> toMap() => {
-    campoId: id,
+    campoId: id == 0 ? null: id,
     campoNome: nome,
     campoDescricao: descricaoo,
     campoDiferenciais: diferenciais,
     campoData:
-    dataCadastro == null ? null : DateFormat("yyyy-MM-dd").format(dataCadastro!)
+    dataCadastro == null ? null : DateFormat("yyyy-MM-dd").format(dataCadastro!),
+    campoFinalizada: finalizada ? 1 : 0
   };
 
   factory PontoTuristico.fromMap(Map<String, dynamic> map) => PontoTuristico(
@@ -51,6 +52,7 @@ class PontoTuristico{
     dataCadastro: map[campoData] is String
         ? DateFormat("yyyy-MM-dd").parse(map[campoData])
         : null,
+    finalizada: map[campoFinalizada] == 1,
   );
 
 
