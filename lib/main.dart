@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gerenciamento_turismomd/pages/filtro_page.dart';
-import 'package:gerenciamento_turismomd/pages/lista_turismo_pages.dart';
+import '../pages/filtro_page.dart';
+import '../pages/lista_turismo_pages.dart';
 
 void main() {
   runApp(const AppGerenciadorTurismo());
@@ -18,7 +18,7 @@ class AppGerenciadorTurismo extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: ListaTurismosPage(),
+      home: ListaTurismoPage(),
       routes: {
         FiltroPage.routeName: (BuildContext context) => FiltroPage(),
       },

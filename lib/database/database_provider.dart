@@ -31,13 +31,21 @@ class DatabaseProvider {
         ${PontoTuristico.campoId} INTEGER PRIMARY KEY AUTOINCREMENT,
         ${PontoTuristico.campoDescricao} TEXT NOT NULL,
         ${PontoTuristico.campoData} TEXT,
-        ${PontoTuristico.campoDiferenciais} INTEGER NOT NULL DEFAULT 0
-        ${PontoTuristico.campoNome} INTEGER NOT NULL DEFAULT 0
+        ${PontoTuristico.campoDiferenciais} TEXT
+        ${PontoTuristico.campoNome} TEXT
+        ${PontoTuristico.campoFinalizada} INTEGER NOT NULL DEFAULT 0;
       );
     ''');
   }
-  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
 
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    switch (oldVersion) {
+      case 1:
+        await db.execute(''' 
+          ALTER TABLE ${PontoTuristico.nomeTabela}
+          ADD ${PontoTuristico.campoFinalizada} INTEGER NOT NULL DEFAULT 0;
+        ''');
+    }
   }
 
   Future<void> close() async {

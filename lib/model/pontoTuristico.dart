@@ -8,18 +8,21 @@ class PontoTuristico{
   static const campoDescricao = 'descricao';
   static const campoData = 'data';
   static const campoDiferenciais = 'diferenciais';
+  static const campoFinalizada = 'finalizada';
 
   int? id;
   String nome;
   String descricaoo;
   String diferenciais;
   DateTime? dataCadastro = DateTime.now();
+  bool finalizada;
 
   PontoTuristico({
-    this.id,
+    required this.id,
     required this.nome,
     required this.descricaoo,
     required this.diferenciais,
+    this.finalizada = false,
     this.dataCadastro});
 
   String get dataCadastroFormatado{

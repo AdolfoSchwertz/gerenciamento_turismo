@@ -110,7 +110,7 @@ class _FiltroPageState extends State<FiltroPage> {
           padding: EdgeInsets.symmetric(horizontal: 10),
           child: TextField(
             decoration: InputDecoration(
-              labelText: 'Informe os diferenciais e nome de busca',
+              labelText: 'Informe os diferenciais de busca',
             ),
             controller: _diferenciaisController,
             onChanged: _onFiltroDiferenciaisChanged,
@@ -122,7 +122,7 @@ class _FiltroPageState extends State<FiltroPage> {
             decoration: InputDecoration(
               labelText: 'Informe o nome de busca',
             ),
-            controller: _diferenciaisController,
+            controller: _nomeController,
             onChanged: _onFiltroNomeChanged,
           ),
         )

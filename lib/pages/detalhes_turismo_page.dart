@@ -56,6 +56,12 @@ class _DetalhesTurismoPageState extends State<DetalhesTurismoPage> {
             Valor(valor: widget.pontoturistico.diferenciais),
           ],
         ),
+        Row(
+          children: [
+            Campo(descricao: 'finalizada: '),
+            Valor(valor: widget.pontoturistico.finalizada ? 'Sim' : 'Não'),
+          ],
+        ),
       ],
     ),
   );

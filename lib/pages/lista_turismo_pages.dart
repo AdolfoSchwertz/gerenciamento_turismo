@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import '../model/pontoTuristico.dart';
+import '../pages/detalhes_turismo_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../dao/turismo_dao.dart';
 import '../model/pontoTuristico.dart';
 import '../widgets/conteudo_form_dialog.dart';
 import 'detalhes_turismo_page.dart';
 import 'filtro_page.dart';
 
-class ListaTurismosPage extends StatefulWidget {
+class ListaTurismoPage extends StatefulWidget{
 
   @override
-  State<StatefulWidget> createState() => _ListaTurismosPageState();
+  _ListaTurismoPageState createState() => _ListaTurismoPageState();
+
 }
 
-class _ListaTurismosPageState extends State<ListaTurismosPage> {
-  static const acaoEditar = 'editar';
-  static const acaoExcluir = 'excluir';
-  static const acaoVisualizar = 'visualizar';
+class _ListaTurismoPageState extends State<ListaTurismoPage> {
+  static const ACAO_EDITAR = 'editar';
+  static const ACAO_EXCLUIR = 'excluir';
+  static const ACAO_VISUALIZAR = 'visualizar';
 
-  final _turismo = <PontoTuristico>[];
+  final _turismos = <PontoTuristico>[];
   final _dao = TurismoDao();
   var _carregando = false;
 
@@ -35,19 +37,21 @@ class _ListaTurismosPageState extends State<ListaTurismosPage> {
       appBar: _criarAppBar(),
       body: _criarBody(),
       floatingActionButton: FloatingActionButton(
-        tooltip: 'Novo Ponto',
-        child: Icon(Icons.add),
+        tooltip: 'Novo Ponto Turístico',
+        child: const Icon(Icons.add),
         onPressed: _abrirForm,
+
       ),
     );
   }
 
+  //APP BAR
   AppBar _criarAppBar() {
     return AppBar(
-      title: Text('Pontos'),
+      title: const Text('Gerenciador de Pontos Turísticos'),
       actions: [
         IconButton(
-          icon: Icon(Icons.filter_list),
+          icon: const Icon(Icons.filter_list),
           tooltip: 'Filtro e Ordenação',
           onPressed: _abrirPaginaFiltro,
         ),
@@ -55,6 +59,7 @@ class _ListaTurismosPageState extends State<ListaTurismosPage> {
     );
   }
 
+  // BODY
   Widget _criarBody() {
     if (_carregando) {
       return Column(
@@ -69,11 +74,13 @@ class _ListaTurismosPageState extends State<ListaTurismosPage> {
             child: Padding(
               padding: EdgeInsets.only(top: 10),
               child: Text(
-                'Carregando seus Pontos',
+                'Carregando seus pontos turisticos',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
+                  color: Theme
+                      .of(context)
+                      .primaryColor,
                 ),
               ),
             ),
@@ -81,38 +88,61 @@ class _ListaTurismosPageState extends State<ListaTurismosPage> {
         ],
       );
     }
-    if (_turismo.isEmpty) {
+    if (_turismos.isEmpty) {
       return Center(
         child: Text(
-          'Nenhum turismo cadastrado',
+          'Nenhum Ponto Turistico cadastrado',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).primaryColor,
+            color: Theme
+                .of(context)
+                .primaryColor,
           ),
         ),
       );
     }
     return ListView.separated(
-      itemCount: _turismo.length,
+      itemCount: _turismos.length,
       itemBuilder: (BuildContext context, int index) {
-        final turismo = _turismo[index];
+        final turismo = _turismos[index];
         return PopupMenuButton<String>(
           child: ListTile(
+            leading: Checkbox(
+              value: turismo.finalizada,
+              onChanged: (bool? checked) {
+                setState(() {
+                  turismo.finalizada = checked == true;
+                });
+                _dao.salvar(turismo);
+              },
+            ),
             title: Text(
               '${turismo.id} - ${turismo.descricaoo}',
+              style: TextStyle(
+                decoration:
+                turismo.finalizada ? TextDecoration.lineThrough : null,
+                color: turismo.finalizada ? Colors.grey : null,
+              ),
             ),
-            subtitle: Text(turismo.dataCadastro == null ? 'Sem datao' : 'Data Cadastro - ${turismo.dataCadastro}',
+            subtitle: Text(turismo.dataCadastro == null
+                ? 'Tarefa sem data de inserção'
+                : 'Data Atual - ${turismo.dataCadastro}',
+              style: TextStyle(
+                decoration:
+                turismo.finalizada ? TextDecoration.lineThrough : null,
+                color: turismo.finalizada ? Colors.grey : null,
+              ),
             ),
           ),
           itemBuilder: (_) => _criarItensMenuPopup(),
           onSelected: (String valorSelecionado) {
-            if (valorSelecionado == acaoEditar) {
+            if (valorSelecionado == ACAO_EDITAR) {
               _abrirForm(turismo: turismo);
-            } else if (valorSelecionado == acaoExcluir) {
+            } else if (valorSelecionado == ACAO_EXCLUIR) {
               _excluir(turismo);
             } else {
-              _abrirPaginaDetalhesTarefa(turismo);
+              _abrirPaginaDetalhesTurismo(turismo);
             }
           },
         );
@@ -123,7 +153,7 @@ class _ListaTurismosPageState extends State<ListaTurismosPage> {
 
   List<PopupMenuEntry<String>> _criarItensMenuPopup() => [
     PopupMenuItem(
-      value: acaoEditar,
+      value: ACAO_EDITAR,
       child: Row(
         children: const [
           Icon(Icons.edit, color: Colors.black),
@@ -135,7 +165,7 @@ class _ListaTurismosPageState extends State<ListaTurismosPage> {
       ),
     ),
     PopupMenuItem(
-      value: acaoExcluir,
+      value: ACAO_EXCLUIR,
       child: Row(
         children: const [
           Icon(Icons.delete, color: Colors.red),
@@ -147,7 +177,7 @@ class _ListaTurismosPageState extends State<ListaTurismosPage> {
       ),
     ),
     PopupMenuItem(
-      value: acaoVisualizar,
+      value: ACAO_VISUALIZAR,
       child: Row(
         children: const [
           Icon(Icons.info, color: Colors.blue),
@@ -166,7 +196,7 @@ class _ListaTurismosPageState extends State<ListaTurismosPage> {
       context: context,
       builder: (_) => AlertDialog(
         title: Text(
-          turismo == null ? 'Novo Ponto' : 'Alterar Ponto ${turismo.id}',
+          turismo == null ? 'Novo Ponto Turistico' : 'Alterar Ponto Turisco ${turismo.id}',
         ),
         content: ConteudoFormDialog(
           key: key,
@@ -243,7 +273,7 @@ class _ListaTurismosPageState extends State<ListaTurismosPage> {
     }
   }
 
-  void _abrirPaginaDetalhesTarefa(PontoTuristico turismo) {
+  void _abrirPaginaDetalhesTurismo(PontoTuristico turismo) {
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -257,7 +287,7 @@ class _ListaTurismosPageState extends State<ListaTurismosPage> {
     setState(() {
       _carregando = true;
     });
-    // Carregar os valores do SharedPreferences
+    //Carregar os valores do SharedPreferences
     final prefs = await SharedPreferences.getInstance();
     final campoOrdenacao =
         prefs.getString(FiltroPage.chaveCampoOrdenacao) ?? PontoTuristico.campoId;
@@ -265,16 +295,20 @@ class _ListaTurismosPageState extends State<ListaTurismosPage> {
         prefs.getBool(FiltroPage.chaveUsarOrdemDecrescente) == true;
     final filtroDescricao =
         prefs.getString(FiltroPage.chaveCampoDescricao) ?? '';
+    final filtroDiferenciais =
+        prefs.getString(FiltroPage.chaveCampoDiferenciais) ?? '';
+    final filtroNome =
+        prefs.getString(FiltroPage.chaveCampoNome) ?? '';
     final turismos = await _dao.listar(
       filtro: filtroDescricao,
       campoOrdenacao: campoOrdenacao,
       usarOrdemDecrescente: usarOrdemDecrescente,
     );
     setState(() {
-      _carregando = false;
-      _turismo.clear();
+      _turismos.clear();
       if (turismos.isNotEmpty) {
-        _turismo.addAll(turismos);
+        _carregando = false;
+        _turismos.addAll(turismos);
       }
     });
   }
