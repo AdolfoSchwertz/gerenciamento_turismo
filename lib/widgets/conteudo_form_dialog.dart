@@ -17,11 +17,11 @@ class ConteudoFormDialog extends StatefulWidget{
 }
 class ConteudoFormDialogState extends State<ConteudoFormDialog> {
 
-  final formKey = GlobalKey<FormState>();
-  final nomeController = TextEditingController();
-  final descricaooController = TextEditingController();
-  final diferenciaisController = TextEditingController();
-  final dataController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _nomeController = TextEditingController();
+  final _descricaooController = TextEditingController();
+  final _diferenciaisController = TextEditingController();
+  final _dataController = TextEditingController();
  /* final _dateFormat = DateFormat('dd/MM/yyyy'); */
 
 
@@ -30,10 +30,10 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog> {
 
     super.initState();
     if (widget.turismoAtual != null){
-      nomeController.text = widget.turismoAtual!.nome;
-      diferenciaisController.text = widget.turismoAtual!.diferenciais;
-      descricaooController.text = widget.turismoAtual!.descricaoo;
-      dataController.text = widget.turismoAtual!.dataCadastroFormatado;
+      _nomeController.text = widget.turismoAtual!.nome;
+      _diferenciaisController.text = widget.turismoAtual!.diferenciais;
+      _descricaooController.text = widget.turismoAtual!.descricaoo;
+      _dataController.text = widget.turismoAtual!.dataCadastroFormatado;
 
      // horaControllerController.text =formattedDate;
 
@@ -43,12 +43,12 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog> {
 
   Widget build(BuildContext context){
     return Form(
-        key: formKey,
+        key: _formKey,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextFormField(
-              controller: nomeController,
+              controller: _nomeController,
               decoration: InputDecoration(labelText: 'Nome'),
               validator: (String? valor){
                 if (valor == null || valor.isEmpty){
@@ -59,7 +59,7 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog> {
 
             ),
             TextFormField(
-              controller: descricaooController,
+              controller: _descricaooController,
               decoration: InputDecoration(labelText: 'Descrição'),
               validator: (String? valor){
                 if (valor == null || valor.isEmpty){
@@ -69,7 +69,7 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog> {
               },
             ),
             TextFormField(
-              controller: diferenciaisController,
+              controller: _diferenciaisController,
               decoration: InputDecoration(labelText: 'Diferenciais'),
               validator: (String? valor){
                 if (valor == null || valor.isEmpty){
@@ -121,13 +121,13 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog> {
   //
   //
   // }
-  bool dadosValidados() => formKey.currentState?.validate() == true;
+  bool dadosValidos() => _formKey.currentState?.validate() == true;
 
   PontoTuristico get novoTurismo => PontoTuristico(
       id: widget.turismoAtual?.id ?? 0,
-      nome: nomeController.text,
-      descricaoo: descricaooController.text,
-      diferenciais: diferenciaisController.text,
+      nome: _nomeController.text,
+      descricaoo: _descricaooController.text,
+      diferenciais: _diferenciaisController.text,
       dataCadastro: DateTime.now()
   );
 

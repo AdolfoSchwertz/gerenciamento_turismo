@@ -1,215 +1,281 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gerenciamento_turismomd/model/pontoTuristico.dart';
-import 'package:gerenciamento_turismomd/pages/filtro_page.dart';
+import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../dao/turismo_dao.dart';
+import '../model/pontoTuristico.dart';
 import '../widgets/conteudo_form_dialog.dart';
+import 'detalhes_turismo_page.dart';
+import 'filtro_page.dart';
 
-class ListaTurismoPage extends StatefulWidget{
+class ListaTurismosPage extends StatefulWidget {
 
   @override
-  _ListaTurismosPageState createState() => _ListaTurismosPageState();
-
+  State<StatefulWidget> createState() => _ListaTurismosPageState();
 }
-class _ListaTurismosPageState extends State<ListaTurismoPage>{
 
-  static const ACAO_EDITAR = 'Editar';
-  static const ACAO_EXCLUIR = 'Excluir';
-  static const ACAO_VISUALIZAR = 'visualizar';
+class _ListaTurismosPageState extends State<ListaTurismosPage> {
+  static const acaoEditar = 'editar';
+  static const acaoExcluir = 'excluir';
+  static const acaoVisualizar = 'visualizar';
 
-  final turismos = <PontoTuristico>
-  [
-    //Tarefa(id: 1,
-    // descricao: 'Fazer atividades da aula',
-    // prazo: DateTime.now().add(Duration(days: 5)),
-    // )
-  ];
-
-  var _ultimoId = 0;
+  final _turismo = <PontoTuristico>[];
+  final _dao = TurismoDao();
+  var _carregando = false;
 
   @override
-  Widget build(BuildContext context){
+  void initState() {
+    super.initState();
+    _atualizarLista();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: _criarAppBar(),
       body: _criarBody(),
       floatingActionButton: FloatingActionButton(
+        tooltip: 'Novo Ponto',
+        child: Icon(Icons.add),
         onPressed: _abrirForm,
-        tooltip: 'Novo ponto turistico',
-        child: const Icon(Icons.add),
       ),
     );
   }
 
-  void _abrirForm({PontoTuristico? turismoAtual, int? index, bool? readonly}){
-    final key = GlobalKey<ConteudoFormDialogState>();
-    showDialog(
-        context: context,
-        builder: (BuildContext context){
-          return AlertDialog(
-            title: Text(turismoAtual == null ? 'Nova Ponto Turistico' : 'Alterar o Ponto Turistico ${turismoAtual.id}'),
-            content: ConteudoFormDialog(key: key, turismoAtual: turismoAtual),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('Cancelar'),
-              ),
-            if (readonly == null || readonly == false)
-              TextButton(
-                onPressed: () {
-                  if (key.currentState != null && key.currentState!.dadosValidados()){
-                    setState(() {
-                      final novoTurismo = key.currentState!.novoTurismo;
-                      if(index == null){
-                        novoTurismo.id = ++_ultimoId;
-                      }else{
-                        turismos[index] = novoTurismo;
-                      }
-                      turismos.add(novoTurismo);
-                    });
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: Text('Salvar'),
-              ),
-            ],
-          );
-        }
-    );
-  }
-  AppBar _criarAppBar(){
+  AppBar _criarAppBar() {
     return AppBar(
-      title: const Text('Gerenciador de Pontos Turisticos'),
+      title: Text('Pontos'),
       actions: [
         IconButton(
-            onPressed: _abrirPaginaFiltro,
-            icon: const Icon(Icons.filter_list)),
+          icon: Icon(Icons.filter_list),
+          tooltip: 'Filtro e Ordenação',
+          onPressed: _abrirPaginaFiltro,
+        ),
       ],
     );
   }
-  Widget _criarBody(){
-    if( turismos.isEmpty){
-      return const Center(
-        child: Text('Nenhum ponto cadastrado',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+
+  Widget _criarBody() {
+    if (_carregando) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Align(
+            alignment: AlignmentDirectional.center,
+            child: CircularProgressIndicator(),
+          ),
+          Align(
+            alignment: AlignmentDirectional.center,
+            child: Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: Text(
+                'Carregando seus Pontos',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    if (_turismo.isEmpty) {
+      return Center(
+        child: Text(
+          'Nenhum turismo cadastrado',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColor,
+          ),
         ),
       );
     }
     return ListView.separated(
-      itemCount: turismos.length,
-      itemBuilder: (BuildContext context, int index){
-        final turismo = turismos[index];
+      itemCount: _turismo.length,
+      itemBuilder: (BuildContext context, int index) {
+        final turismo = _turismo[index];
         return PopupMenuButton<String>(
-            child: ListTile(
-              title: Text('${turismo.id} - ${turismo.nome}'),
-              subtitle: Text(turismo.dataCadastro == null ? 'Tarefa sem prazo definido' : 'Data de Cadastro - ${turismo.dataCadastroFormatado}'),
+          child: ListTile(
+            title: Text(
+              '${turismo.id} - ${turismo.descricaoo}',
             ),
-            itemBuilder: (BuildContext context) => _criarItensMenu(),
-            onSelected: (String valorSelecinado){
-              if(valorSelecinado == ACAO_EDITAR){
-                _abrirForm(turismoAtual: turismo, index: index, readonly: false);
-              }else if(valorSelecinado == ACAO_VISUALIZAR){
-                _abrirForm(turismoAtual: turismo, index: index, readonly: true);
-              }else{
-                _excluir(index);
-              }
+            subtitle: Text(turismo.dataCadastro == null ? 'Sem datao' : 'Data Cadastro - ${turismo.dataCadastro}',
+            ),
+          ),
+          itemBuilder: (_) => _criarItensMenuPopup(),
+          onSelected: (String valorSelecionado) {
+            if (valorSelecionado == acaoEditar) {
+              _abrirForm(turismo: turismo);
+            } else if (valorSelecionado == acaoExcluir) {
+              _excluir(turismo);
+            } else {
+              _abrirPaginaDetalhesTarefa(turismo);
             }
+          },
         );
       },
-      separatorBuilder: (BuildContext context, int index) => Divider(),
+      separatorBuilder: (_, __) => Divider(),
     );
   }
-  void _excluir(int indice){
+
+  List<PopupMenuEntry<String>> _criarItensMenuPopup() => [
+    PopupMenuItem(
+      value: acaoEditar,
+      child: Row(
+        children: const [
+          Icon(Icons.edit, color: Colors.black),
+          Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: Text('Editar'),
+          ),
+        ],
+      ),
+    ),
+    PopupMenuItem(
+      value: acaoExcluir,
+      child: Row(
+        children: const [
+          Icon(Icons.delete, color: Colors.red),
+          Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: Text('Excluir'),
+          ),
+        ],
+      ),
+    ),
+    PopupMenuItem(
+      value: acaoVisualizar,
+      child: Row(
+        children: const [
+          Icon(Icons.info, color: Colors.blue),
+          Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: Text('Visualizar'),
+          ),
+        ],
+      ),
+    ),
+  ];
+
+  void _abrirForm({PontoTuristico? turismo}) {
+    final key = GlobalKey<ConteudoFormDialogState>();
     showDialog(
-        context: context,
-        builder: (BuildContext context){
-          return AlertDialog(
-            title: Row(
-              children: [
-                Icon(Icons.warning, color: Colors.red,),
-                Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Text('Atenção'),
-                )
-              ],
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(
+          turismo == null ? 'Novo Ponto' : 'Alterar Ponto ${turismo.id}',
+        ),
+        content: ConteudoFormDialog(
+          key: key,
+          turismoAtual: turismo,
+        ),
+        actions: [
+          TextButton(
+            child: Text('Cancelar'),
+            onPressed: () => Navigator.pop(context),
+          ),
+          TextButton(
+            child: Text('Salvar'),
+            onPressed: () {
+              if (key.currentState?.dadosValidos() != true) {
+                return;
+              }
+              Navigator.of(context).pop();
+              final novoTurismo = key.currentState!.novoTurismo;
+              _dao.salvar(novoTurismo).then((success) {
+                if (success) {
+                  _atualizarLista();
+                }
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _excluir(PontoTuristico turismo) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.warning),
+            Padding(
+              padding: EdgeInsets.only(left: 10),
+              child: Text('Atenção'),
             ),
-            content: Text('Esse registro será deletado permanentemente'),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text('Cancelar')
-              ),
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    setState(() {
-                      turismos.removeAt(indice);
-                    });
-                  },
-                  child: Text('OK')
-              )
-            ],
-          );
-        }
+          ],
+        ),
+        content: Text('Esse registro será removido definitivamente.'),
+        actions: [
+          TextButton(
+            child: Text('Cancelar'),
+            onPressed: () => Navigator.pop(context),
+          ),
+          TextButton(
+            child: Text('OK'),
+            onPressed: () {
+              Navigator.pop(context);
+              if (turismo.id == null) {
+                return;
+              }
+              _dao.remover(turismo.id!).then((success) {
+                if (success) {
+                  _atualizarLista();
+                }
+              });
+            },
+          ),
+        ],
+      ),
     );
-
   }
 
-
-
-  List<PopupMenuEntry<String>> _criarItensMenu(){
-    return[
-      PopupMenuItem(
-        value: ACAO_EDITAR,
-        child: Row(
-          children: [
-            Icon(Icons.edit, color: Colors.black),
-            Padding(
-              padding: EdgeInsets.only(left: 10),
-              child: Text('EDITAR'),
-            )
-          ],
-        ),
-      ),
-
-      PopupMenuItem(
-        value: ACAO_VISUALIZAR,
-        child: Row(
-          children: [
-            Icon(Icons.visibility, color: Colors.black),
-            Padding(
-              padding: EdgeInsets.only(left: 10),
-              child: Text('visualizar'),
-            )
-          ],
-        ),
-      ),
-
-      PopupMenuItem(
-        value: ACAO_EXCLUIR,
-        child: Row(
-          children: [
-            Icon(Icons.delete, color: Colors.red),
-            Padding(
-              padding: EdgeInsets.only(left: 10),
-              child: Text('Excluir'),
-            )
-          ],
-        ),
-      )
-    ];
-  }
-
-  void _abrirPaginaFiltro(){
+  void _abrirPaginaFiltro() async {
     final navigator = Navigator.of(context);
-    navigator.pushNamed(FiltroPage.routeName).then((alterouValores){
-      if( alterouValores == true){
-        ///filtro
-      }
+    final alterouValores = await navigator.pushNamed(FiltroPage.routeName);
+    if (alterouValores == true) {
+      _atualizarLista();
     }
-
-    );
-
   }
 
+  void _abrirPaginaDetalhesTarefa(PontoTuristico turismo) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => DetalhesTurismoPage(
+            pontoturistico: turismo,
+          ),
+        ));
+  }
+
+  void _atualizarLista() async {
+    setState(() {
+      _carregando = true;
+    });
+    // Carregar os valores do SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    final campoOrdenacao =
+        prefs.getString(FiltroPage.chaveCampoOrdenacao) ?? PontoTuristico.campoId;
+    final usarOrdemDecrescente =
+        prefs.getBool(FiltroPage.chaveUsarOrdemDecrescente) == true;
+    final filtroDescricao =
+        prefs.getString(FiltroPage.chaveCampoDescricao) ?? '';
+    final turismos = await _dao.listar(
+      filtro: filtroDescricao,
+      campoOrdenacao: campoOrdenacao,
+      usarOrdemDecrescente: usarOrdemDecrescente,
+    );
+    setState(() {
+      _carregando = false;
+      _turismo.clear();
+      if (turismos.isNotEmpty) {
+        _turismo.addAll(turismos);
+      }
+    });
+  }
 }

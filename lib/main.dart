@@ -18,7 +18,7 @@ class AppGerenciadorTurismo extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: ListaTurismoPage(),
+      home: ListaTurismosPage(),
       routes: {
         FiltroPage.routeName: (BuildContext context) => FiltroPage(),
       },

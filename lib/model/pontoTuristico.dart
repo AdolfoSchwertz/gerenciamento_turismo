@@ -2,19 +2,25 @@ import 'package:intl/intl.dart';
 
 class PontoTuristico{
 
-  static const CAMPO_ID = 'id';
-  static const CAMPO_NOME = 'nome';
-  static const CAMPO_DESCRICAOO = 'descricao';
-  static const CAMPO_DATA = 'data';
-  static const CAMPO_DIFERENCIAIS = 'diferenciais';
+  static const nomeTabela = 'ponto turistico';
+  static const campoId = 'id';
+  static const campoNome = 'nome';
+  static const campoDescricao = 'descricao';
+  static const campoData = 'data';
+  static const campoDiferenciais = 'diferenciais';
 
-  int id;
+  int? id;
   String nome;
   String descricaoo;
   String diferenciais;
-  DateTime? dataCadastro;
+  DateTime? dataCadastro = DateTime.now();
 
-  PontoTuristico({required this.id, required this.nome, required this.descricaoo, required this.diferenciais, this.dataCadastro});
+  PontoTuristico({
+    this.id,
+    required this.nome,
+    required this.descricaoo,
+    required this.diferenciais,
+    this.dataCadastro});
 
   String get dataCadastroFormatado{
     // if (horaCadastro == null){
@@ -24,6 +30,25 @@ class PontoTuristico{
     String formattedDate = DateFormat('dd/MM/yyyy').format(now);
     return formattedDate;
   }
+
+  Map<String, dynamic> toMap() => {
+    campoId: id,
+    campoNome: nome,
+    campoDescricao: descricaoo,
+    campoDiferenciais: diferenciais,
+    campoData:
+    dataCadastro == null ? null : DateFormat("yyyy-MM-dd").format(dataCadastro!)
+  };
+
+  factory PontoTuristico.fromMap(Map<String, dynamic> map) => PontoTuristico(
+    id: map[campoId] is int ? map[campoId] : null,
+    descricaoo: map[campoDescricao] is String ? map[campoDescricao] : '',
+    diferenciais: map[campoDiferenciais] is String ? map[campoDiferenciais] : '',
+    nome: map[campoNome] is String ? map[campoNome] : '',
+    dataCadastro: map[campoData] is String
+        ? DateFormat("yyyy-MM-dd").parse(map[campoData])
+        : null,
+  );
 
 
 

@@ -8,6 +8,8 @@ class FiltroPage extends StatefulWidget{
   static const chaveCampoOrdenacao = 'campoOrdenacao';
   static const chaveUsarOrdemDecrescente = 'usarOrdemDecrescente';
   static const chaveCampoDescricao = 'campoDescricao';
+  static const chaveCampoDiferenciais = 'campoDiferencial';
+  static const chaveCampoNome = 'campoNome';
 
   @override
   _FiltroPageState createState() => _FiltroPageState();
@@ -16,18 +18,20 @@ class FiltroPage extends StatefulWidget{
 class _FiltroPageState extends State<FiltroPage> {
 
   final _camposParaOrdenacao = {
-    PontoTuristico.CAMPO_ID: 'Código',
-    PontoTuristico.CAMPO_NOME: 'Nome',
-    PontoTuristico.CAMPO_DESCRICAOO: 'Descrição',
-    PontoTuristico.CAMPO_DIFERENCIAIS: 'Diferenciais',
-    PontoTuristico.CAMPO_DATA: 'Data de Cadastro'
+    PontoTuristico.campoId: 'Código',
+    PontoTuristico.campoNome: 'Nome',
+    PontoTuristico.campoDescricao: 'Descrição',
+    PontoTuristico.campoDiferenciais: 'Diferenciais',
+    PontoTuristico.campoData: 'Data de Cadastro'
   };
 
   late final SharedPreferences _prefes;
   final _descricaoController = TextEditingController();
-  String _campoOrdenacao = PontoTuristico.CAMPO_ID;
+  String _campoOrdenacao = PontoTuristico.campoId;
   bool _usarOrdemDecrescente = false;
   bool _alterouValores = false;
+  final _diferenciaisController = TextEditingController();
+  final _nomeController = TextEditingController();
 
   @override
   void initState(){
@@ -38,9 +42,16 @@ class _FiltroPageState extends State<FiltroPage> {
   void _carregaDadosSharedPreferences() async {
     _prefes = await SharedPreferences.getInstance();
     setState(() {
-      _campoOrdenacao = _prefes.getString(FiltroPage.chaveCampoOrdenacao) ?? PontoTuristico.CAMPO_ID;
+      _campoOrdenacao = _prefes.getString(FiltroPage.chaveCampoOrdenacao) ?? PontoTuristico.campoId;
       _usarOrdemDecrescente = _prefes.getBool(FiltroPage.chaveUsarOrdemDecrescente) == true;
       _descricaoController.text = _prefes.getString(FiltroPage.chaveCampoDescricao) ?? '' ;
+      _descricaoController.text =
+          _prefes.getString(FiltroPage.chaveCampoDescricao) ?? '';
+      _diferenciaisController.text =
+          _prefes.getString(FiltroPage.chaveCampoDiferenciais) ?? '';
+      _nomeController.text =
+          _prefes.getString(FiltroPage.chaveCampoNome) ?? '';
+
     });
   }
 
@@ -89,10 +100,30 @@ class _FiltroPageState extends State<FiltroPage> {
           padding: EdgeInsets.symmetric(horizontal: 10),
           child: TextField(
             decoration: InputDecoration(
-              labelText: 'Informe o texto de busca',
+              labelText: 'Informe a descricao de busca',
             ),
             controller: _descricaoController ,
             onChanged: _onFiltroDescricaoChanged,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: TextField(
+            decoration: InputDecoration(
+              labelText: 'Informe os diferenciais e nome de busca',
+            ),
+            controller: _diferenciaisController,
+            onChanged: _onFiltroDiferenciaisChanged,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: TextField(
+            decoration: InputDecoration(
+              labelText: 'Informe o nome de busca',
+            ),
+            controller: _diferenciaisController,
+            onChanged: _onFiltroNomeChanged,
           ),
         )
       ],
@@ -117,6 +148,16 @@ class _FiltroPageState extends State<FiltroPage> {
 
   void _onFiltroDescricaoChanged(String? valor){
     _prefes.setString(FiltroPage.chaveCampoDescricao, valor!);
+    _alterouValores = true;
+  }
+
+  void _onFiltroDiferenciaisChanged(String? valor){
+    _prefes.setString(FiltroPage.chaveCampoDiferenciais, valor!);
+    _alterouValores = true;
+  }
+
+  void _onFiltroNomeChanged(String? valor){
+    _prefes.setString(FiltroPage.chaveCampoNome, valor!);
     _alterouValores = true;
   }
 
