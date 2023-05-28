@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 
 import '../model/pontoTuristico.dart';
+import 'mapa_interno.dart';
 
 class DetalhesTurismoPage extends StatefulWidget {
   final PontoTuristico pontoturistico;
@@ -58,6 +60,23 @@ class _DetalhesTurismoPageState extends State<DetalhesTurismoPage> {
         ),
         Row(
           children: [
+            Campo(descricao: 'Localização: '),
+            Valor(
+              valor: 'Latitude: ${widget.pontoturistico.latitude}\nLongetude: ${widget.pontoturistico.longetude}',
+            ),
+            ElevatedButton(
+                onPressed: _abrirCoordenadasNoMapaExterno,
+                child: Icon(Icons.map)
+            ),
+            ElevatedButton(
+                onPressed: _abrirCoordenadasNoMapaInterno,
+                child: Icon(Icons.map)
+            ),
+          ],
+        ),
+
+        Row(
+          children: [
             Campo(descricao: 'finalizada: '),
             Valor(valor: widget.pontoturistico.finalizada ? 'Sim' : 'Não'),
           ],
@@ -65,6 +84,25 @@ class _DetalhesTurismoPageState extends State<DetalhesTurismoPage> {
       ],
     ),
   );
+
+  void _abrirCoordenadasNoMapaExterno() {
+    if (widget.pontoturistico.latitude.isEmpty || widget.pontoturistico.longetude.isEmpty ) {
+      return;
+    }
+    MapsLauncher.launchCoordinates(double.parse(widget.pontoturistico.latitude), double.parse(widget.pontoturistico.longetude));
+  }
+
+  void _abrirCoordenadasNoMapaInterno(){
+    if (widget.pontoturistico.latitude.isEmpty || widget.pontoturistico.longetude.isEmpty ){
+      return;
+    }
+    Navigator.push(context,
+      MaterialPageRoute(builder: (BuildContext context) => MapaPage(
+          latitude: double.parse(widget.pontoturistico.latitude), longitude: double.parse(widget.pontoturistico.longetude)
+      ),
+      ),
+    );
+  }
 }
 
 class Campo extends StatelessWidget {

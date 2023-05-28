@@ -80,7 +80,7 @@ class _ListaTurismoPageState extends State<ListaTurismoPage> {
                   fontWeight: FontWeight.bold,
                   color: Theme
                       .of(context)
-                      .primaryColor,
+                      .primaryColor
                 ),
               ),
             ),
@@ -118,7 +118,7 @@ class _ListaTurismoPageState extends State<ListaTurismoPage> {
               },
             ),
             title: Text(
-              '${turismo.id} - ${turismo.descricaoo}',
+              '${turismo.id} - ${turismo.nome}',
               style: TextStyle(
                 decoration:
                 turismo.finalizada ? TextDecoration.lineThrough : null,
@@ -127,7 +127,7 @@ class _ListaTurismoPageState extends State<ListaTurismoPage> {
             ),
             subtitle: Text(turismo.dataCadastro == null
                 ? 'Tarefa sem data de inserção'
-                : 'Data Atual - ${turismo.dataCadastro}',
+                : 'Data Cadastro - ${turismo.dataCadastroFormatado}',
               style: TextStyle(
                 decoration:
                 turismo.finalizada ? TextDecoration.lineThrough : null,

@@ -52,7 +52,9 @@ class TurismoDao {
         PontoTuristico.campoDescricao,
         PontoTuristico.campoDiferenciais,
         PontoTuristico.campoData,
-        PontoTuristico.campoNome
+        PontoTuristico.campoNome,
+        PontoTuristico.campoLatitude,
+        PontoTuristico.campoLongetude
       ],
       where: where,
       orderBy: orderBy,
