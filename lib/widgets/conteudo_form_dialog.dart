@@ -96,8 +96,9 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog> {
               onPressed: _obterLocalizacaoAtual,
               child: Text('Obter Localização'),
             ),
-            Text('Latitude: ${widget.turismoAtual!.latitude}  |  Longetude: ${widget.turismoAtual!.longetude}'
-            ),
+           Text('Latitude: ${widget.turismoAtual?.latitude ?? _latitude}  |  Longitude: ${widget.turismoAtual?.longetude ?? _longitude}'
+           ),
+
             ElevatedButton(
                 onPressed: _abrirCoordenadasNoMapaExterno,
                 child: Icon(Icons.map)
@@ -139,6 +140,7 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog> {
     setState(() {
 
     });
+
 
 
   }
