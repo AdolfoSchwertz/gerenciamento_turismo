@@ -34,21 +34,25 @@ class DatabaseProvider {
         ${PontoTuristico.campoDiferenciais} TEXT,
         ${PontoTuristico.campoNome} TEXT,
         ${PontoTuristico.campoLatitude} TEXT,
-        ${PontoTuristico.campoLongetude} TEXT,
-        ${PontoTuristico.campoFinalizada} INTEGER NOT NULL DEFAULT 0
+        ${PontoTuristico.campoLongetude} TEXT
+        
       );
     ''');
   }
+  // ${PontoTuristico.campoFinalizada} INTEGER NOT NULL DEFAULT 0
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     switch (oldVersion) {
       case 1:
         await db.execute(''' 
           ALTER TABLE ${PontoTuristico.nomeTabela}
-          ADD ${PontoTuristico.campoFinalizada} INTEGER NOT NULL DEFAULT 0;
+          ADD ${PontoTuristico.campoLatitude} INTEGER NOT NULL DEFAULT -23.233699,
+          ADD ${PontoTuristico.campoLongetude} INTEGER NOT NULL DEFAULT -52.671366;
+         
         ''');
     }
   }
+  // ADD ${PontoTuristico.campoFinalizada} INTEGER NOT NULL DEFAULT 0;
 
   Future<void> close() async {
     if (_database != null) {

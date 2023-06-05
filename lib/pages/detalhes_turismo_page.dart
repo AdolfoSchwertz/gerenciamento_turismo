@@ -66,21 +66,33 @@ class _DetalhesTurismoPageState extends State<DetalhesTurismoPage> {
             ),
             ElevatedButton(
                 onPressed: _abrirCoordenadasNoMapaExterno,
-                child: Icon(Icons.map)
+              child: Row(
+                children: [
+                  Icon(Icons.map),
+                  SizedBox(width: 8), // Espaçamento entre o ícone e o texto
+                  Text('E'),
+                ],
+              ),
             ),
             ElevatedButton(
                 onPressed: _abrirCoordenadasNoMapaInterno,
-                child: Icon(Icons.map)
+              child: Row(
+                children: [
+                  Icon(Icons.map),
+                  SizedBox(width: 8), // Espaçamento entre o ícone e o texto
+                  Text('I'),
+                ],
+              ),
             ),
           ],
         ),
 
-        Row(
-          children: [
-            Campo(descricao: 'finalizada: '),
-            Valor(valor: widget.pontoturistico.finalizada ? 'Sim' : 'Não'),
-          ],
-        ),
+        // Row(
+        //   children: [
+        //     Campo(descricao: 'finalizada: '),
+        //     Valor(valor: widget.pontoturistico.finalizada ? 'Sim' : 'Não'),
+        //   ],
+        // ),
       ],
     ),
   );

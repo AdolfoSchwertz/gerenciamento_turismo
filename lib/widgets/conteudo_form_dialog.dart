@@ -100,13 +100,25 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog> {
            ),
 
             ElevatedButton(
-                onPressed: _abrirCoordenadasNoMapaExterno,
-                child: Icon(Icons.map)
+              onPressed: _abrirCoordenadasNoMapaExterno,
+              child: Row(
+                children: [
+                  Icon(Icons.map),
+                  SizedBox(width: 8), // Espaçamento entre o ícone e o texto
+                  Text('Mapa Externo'),
+                ],
+              ),
             ),
-            // ElevatedButton(
-            //     onPressed: _abrirCoordenadasNoMapaInterno,
-            //     child: Icon(Icons.map)
-            // ),
+            ElevatedButton(
+              onPressed: _abrirCoordenadasNoMapaInterno,
+              child: Row(
+                children: [
+                  Icon(Icons.map),
+                  SizedBox(width: 8), // Espaçamento entre o ícone e o texto
+                  Text('Mapa Interno'),
+                ],
+              ),
+            )
           ],
         )
         )
@@ -140,8 +152,6 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog> {
     setState(() {
 
     });
-
-
 
   }
 

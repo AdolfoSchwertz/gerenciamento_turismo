@@ -108,31 +108,31 @@ class _ListaTurismoPageState extends State<ListaTurismoPage> {
         final turismo = _turismos[index];
         return PopupMenuButton<String>(
           child: ListTile(
-            leading: Checkbox(
-              value: turismo.finalizada,
-              onChanged: (bool? checked) {
-                setState(() {
-                  turismo.finalizada = checked == true;
-                });
-                _dao.salvar(turismo);
-              },
-            ),
+         //   leading: Checkbox(
+             // value: turismo.finalizada,
+           //   onChanged: (bool? checked) {
+               // setState(() {
+                //  turismo.finalizada = checked == true;
+              //  });
+             //   _dao.salvar(turismo);
+             // },
+           // ),
             title: Text(
               '${turismo.id} - ${turismo.nome}',
-              style: TextStyle(
-                decoration:
-                turismo.finalizada ? TextDecoration.lineThrough : null,
-                color: turismo.finalizada ? Colors.grey : null,
-              ),
+            //  style: TextStyle(
+            //    decoration:
+               // turismo.finalizada ? TextDecoration.lineThrough : null,
+              //  color: turismo.finalizada ? Colors.grey : null,
+             // ),
             ),
             subtitle: Text(turismo.dataCadastro == null
                 ? 'Tarefa sem data de inserção'
                 : 'Data Cadastro - ${turismo.dataCadastroFormatado}',
-              style: TextStyle(
-                decoration:
-                turismo.finalizada ? TextDecoration.lineThrough : null,
-                color: turismo.finalizada ? Colors.grey : null,
-              ),
+              // style: TextStyle(
+              //   decoration:
+              //   turismo.finalizada ? TextDecoration.lineThrough : null,
+              //   color: turismo.finalizada ? Colors.grey : null,
+              // ),
             ),
           ),
           itemBuilder: (_) => _criarItensMenuPopup(),
@@ -300,9 +300,12 @@ class _ListaTurismoPageState extends State<ListaTurismoPage> {
     final filtroNome =
         prefs.getString(FiltroPage.chaveCampoNome) ?? '';
     final turismos = await _dao.listar(
-      filtro: filtroDescricao,
+      filtroDescricao: filtroDescricao,
+      filtroDiferenciais: filtroDiferenciais,
+      filtroNome: filtroNome,
       campoOrdenacao: campoOrdenacao,
       usarOrdemDecrescente: usarOrdemDecrescente,
+
     );
     setState(() {
       _turismos.clear();

@@ -32,13 +32,21 @@ class TurismoDao {
   }
 
   Future<List<PontoTuristico>> listar({
-    String filtro = '',
+    String filtroDescricao = '',
+    String filtroDiferenciais = '',
+    String filtroNome = '',
     String campoOrdenacao = PontoTuristico.campoId,
     bool usarOrdemDecrescente = false,
   }) async {
     String? where;
-    if (filtro.isNotEmpty) {
-      where = "UPPER(${PontoTuristico.campoDescricao}) LIKE '${filtro.toUpperCase()}%'";
+    if (filtroDescricao.isNotEmpty) {
+      where = "UPPER(${PontoTuristico.campoDescricao}) LIKE '${filtroDescricao.toUpperCase()}%'";
+    }
+    if (filtroDiferenciais.isNotEmpty) {
+      where = "UPPER(${PontoTuristico.campoDiferenciais}) LIKE '${filtroDiferenciais.toUpperCase()}%'";
+    }
+    if (filtroNome.isNotEmpty) {
+      where = "UPPER(${PontoTuristico.campoNome}) LIKE '${filtroNome.toUpperCase()}%'";
     }
     var orderBy = campoOrdenacao;
     if (usarOrdemDecrescente) {
