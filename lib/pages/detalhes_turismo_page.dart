@@ -86,6 +86,12 @@ class _DetalhesTurismoPageState extends State<DetalhesTurismoPage> {
             ),
           ],
         ),
+        Row(
+          children: [
+            Campo(descricao: 'Cep: '),
+            Valor(valor: widget.pontoturistico.cep),
+          ],
+        ),
 
         // Row(
         //   children: [

@@ -34,7 +34,8 @@ class DatabaseProvider {
         ${PontoTuristico.campoDiferenciais} TEXT,
         ${PontoTuristico.campoNome} TEXT,
         ${PontoTuristico.campoLatitude} TEXT,
-        ${PontoTuristico.campoLongetude} TEXT
+        ${PontoTuristico.campoLongetude} TEXT,
+        ${PontoTuristico.campoCep} TEXT
         
       );
     ''');
@@ -47,7 +48,8 @@ class DatabaseProvider {
         await db.execute(''' 
           ALTER TABLE ${PontoTuristico.nomeTabela}
           ADD ${PontoTuristico.campoLatitude} INTEGER NOT NULL DEFAULT -23.233699,
-          ADD ${PontoTuristico.campoLongetude} INTEGER NOT NULL DEFAULT -52.671366;
+          ADD ${PontoTuristico.campoLongetude} INTEGER NOT NULL DEFAULT -52.671366,
+          ADD ${PontoTuristico.campoCep} INTEGER NOT NULL DEFAULT 85501-200;
          
         ''');
     }
